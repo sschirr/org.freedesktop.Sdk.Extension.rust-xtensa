@@ -1,0 +1,88 @@
+app-id: org.freedesktop.Sdk.Extension.rust-xtensa
+
+branch: '20.08'
+runtime: org.freedesktop.Sdk
+runtime-version: '20.08'
+sdk: org.freedesktop.Sdk
+build-extension: true
+separate-locales: false
+appstream-compose: false
+
+build-options:
+  prefix: /usr/lib/sdk/rust-xtensa
+
+modules:
+  - name: rust-xtensa
+    buildsystem: simple
+    build-commands:
+      - cd rustc-x86_64-unknown-linux-gnu && ./install.sh --prefix=/usr/lib/sdk/rust-xtensa --disable-ldconfig --verbose
+      - cd rustc-dev-x86_64-unknown-linux-gnu && ./install.sh --prefix=/usr/lib/sdk/rust-xtensa --disable-ldconfig --verbose
+      - cd rust-dev-x86_64-unknown-linux-gnu && ./install.sh --prefix=/usr/lib/sdk/rust-xtensa --disable-ldconfig --verbose
+      - cd rust-docs-x86_64-unknown-linux-gnu && ./install.sh --prefix=/usr/lib/sdk/rust-xtensa --disable-ldconfig --verbose
+      - cd rust-src && ./install.sh --prefix=/usr/lib/sdk/rust-xtensa --disable-ldconfig --verbose
+      - cd rust-std-x86_64-unknown-linux-gnu && ./install.sh --prefix=/usr/lib/sdk/rust-xtensa --disable-ldconfig --verbose
+      - cd cargo-x86_64-unknown-linux-gnu && ./install.sh --prefix=/usr/lib/sdk/rust-xtensa --disable-ldconfig --verbose
+    only-arches:
+      - x86_64
+    sources:
+      - type: archive
+        dest: rustc-x86_64-unknown-linux-gnu
+        url: https://github.com/MabezDev/rust-xtensa/releases/download/xtensa-v0.2.0/rustc-1.48.0-dev-x86_64-unknown-linux-gnu.tar.gz
+        sha256: 5168f083302fba92c2789e46f2a2b55ab58f01a47ec6cb813ba67ddb118db17b
+      - type: archive
+        dest: rustc-dev-x86_64-unknown-linux-gnu
+        url: https://github.com/MabezDev/rust-xtensa/releases/download/xtensa-v0.2.0/rustc-dev-1.48.0-dev-x86_64-unknown-linux-gnu.tar.gz
+        sha256: 2d14013b706071f4534a7582a6f1dcaa9f772f6c7803ac15146ff7fb1be51f67
+      - type: archive
+        dest: rust-dev-x86_64-unknown-linux-gnu
+        url: https://github.com/MabezDev/rust-xtensa/releases/download/xtensa-v0.2.0/rust-dev-1.48.0-dev-x86_64-unknown-linux-gnu.tar.gz
+        sha256: a0077f92904bb7834f1b950a6f0d2d4c6ead57a545387c8694bb38c34efb091a
+      - type: archive
+        dest: rust-docs-x86_64-unknown-linux-gnu
+        url: https://github.com/MabezDev/rust-xtensa/releases/download/xtensa-v0.2.0/rust-docs-1.48.0-dev-x86_64-unknown-linux-gnu.tar.gz
+        sha256: 8dedf1d4fd722d3b8686525ef1ee147f857d6d8c1e86f74d9c29a2179417da71
+      - type: archive
+        dest: rust-src
+        url: https://github.com/MabezDev/rust-xtensa/releases/download/xtensa-v0.2.0/rust-src-1.48.0-dev.tar.gz
+        sha256: 927193a09137a60945692191cf94cd2f4ad03627d1b94b0d5dcdbc2c76d2c7a8
+      - type: archive
+        dest: rust-std-x86_64-unknown-linux-gnu
+        url: https://github.com/MabezDev/rust-xtensa/releases/download/xtensa-v0.2.0/rust-std-1.48.0-dev-x86_64-unknown-linux-gnu.tar.gz
+        sha256: 203da3768fb43416634b551798c040526855b78c0fcb1eb1179831eb7390cbac
+      - type: archive
+        dest: cargo-x86_64-unknown-linux-gnu
+        url: https://static.rust-lang.org/dist/2020-12-19/cargo-nightly-x86_64-unknown-linux-gnu.tar.gz
+        sha256: 4b60c1f6965f4c3ad364fc3b7ed5db907ada11b9f7aba247cbaea98816686230
+
+  - name: xtensa-esp32-toolchain
+    buildsystem: simple
+    build-commands:
+      - mv xtensa-esp32-elf-gcc /usr/lib/sdk/rust-xtensa/esp32
+    only-arches:
+      - x86_64
+    sources:
+      - type: archive
+        dest: xtensa-esp32-elf-gcc
+        url: https://github.com/espressif/crosstool-NG/releases/download/esp-2020r3/xtensa-esp32-elf-gcc8_4_0-esp-2020r3-linux-amd64.tar.gz
+        sha256: 674080a12f9c5ebe5a3a5ce51c6deaeffe6dfb06d6416233df86f25b574e9279
+
+  - name: rust-analyzer
+    buildsystem: simple
+    build-commands:
+      - mv rust-analyzer-linux /usr/lib/sdk/rust-xtensa/bin/rust-analyzer
+    only-arches:
+      - x86_64
+    sources:
+      - type: file
+        url: https://github.com/rust-analyzer/rust-analyzer/releases/download/2021-03-01/rust-analyzer-linux
+        sha256: c0d69e1a36bf57ee90c98e271ca68074fd4695101f21aefe3977213dbba305db
+
+  - name: scripts
+    buildsystem: simple
+    build-commands:
+      - cp enable.sh /usr/lib/sdk/rust-xtensa/
+    sources:
+      - type: script
+        commands:
+          - export PATH=$PATH:/usr/lib/sdk/rust-xtensa/bin:/usr/lib/sdk/rust-xtensa/esp32/bin
+        dest-filename: enable.sh
